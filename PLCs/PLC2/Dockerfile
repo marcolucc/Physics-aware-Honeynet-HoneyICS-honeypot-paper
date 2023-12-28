@@ -14,26 +14,6 @@ RUN apt-get update \
 
 WORKDIR /home/
 
-RUN apt-get update 
-RUN apt-get install -y git libevent-dev libdumbnet-dev libpcap-dev libpcre3-dev libedit-dev bison flex libtool automake git zlib1g-dev make
-COPY Honeyd/ /home/Honeyd/
-WORKDIR Honeyd
-
-RUN mv configure.in configure.ac
-RUN ./autogen.sh
-RUN ./configure
-
-RUN make 
-RUN make install 
-COPY signatures.sh /app/signatures.sh
-WORKDIR /app
-ADD honeyd.conf /app/honeyd.conf
-ADD comm_modbus.py /app/comm_modbus.py
-ADD nmap-os-db /app/nmap-os-db
-RUN chmod +x signatures.sh && ./signatures.sh
-
-WORKDIR /home/
-
 RUN git clone https://github.com/thiagoralves/OpenPLC_v3.git
 WORKDIR /home/OpenPLC_v3/
 RUN ls -al install.sh
@@ -54,4 +34,4 @@ EXPOSE 47
 EXPOSE 67
 EXPOSE 68
 
-CMD sudo echo '192.168.10.106  plc1.net' >> /etc/hosts && echo '192.168.10.107  plc2.net' >> /etc/hosts && echo '192.168.10.108  plc3.net' >> /etc/hosts; nohup honeyd -d -f /app/honeyd.conf &> honeyd.log; nohup python /app/comm_modbus.py &> comm.log; sh /home/OpenPLC_v3/run.sh
+CMD sudo echo '192.168.10.106  plc1.net' >> /etc/hosts && echo '192.168.10.107  plc2.net' >> /etc/hosts && echo '192.168.10.108  plc3.net' >> /etc/hosts; nohup python /app/comm_modbus.py &> comm.log; sh /home/OpenPLC_v3/run.sh

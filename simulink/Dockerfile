@@ -15,6 +15,7 @@ RUN sudo wget -q https://www.mathworks.com/mpm/glnxa64/mpm && sudo chmod +x mpm
 # Install MATLAB Toolboxes
 RUN sudo ./mpm install --release=R2021a --destination=/opt/matlab/R2021a/ --products Simulink Signal_Processing_Toolbox DSP_System_Toolbox
 
+CMD tail -f /dev/null
 # Run matlab
 #RUN matlab /usr/local/src/init.m
 

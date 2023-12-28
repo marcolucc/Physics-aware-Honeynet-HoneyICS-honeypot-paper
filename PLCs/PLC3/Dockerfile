@@ -16,7 +16,6 @@ RUN add-apt-repository ppa:deadsnakes/ppa
 
 RUN apt-get update 
 RUN apt-get install -y python3.7  libevent-dev libdumbnet-dev libpcap-dev libpcre3-dev libedit-dev bison flex libtool automake git zlib1g-dev make
-COPY Honeyd/ /home/Honeyd/
 
 RUN echo "alias python=python3.7" >> ~/.bashrc
 RUN export PATH=${PATH}:/usr/bin/python3.7
@@ -29,18 +28,6 @@ RUN python3 -m pip install --upgrade pip
 RUN pip install snmpsim==0.4.7 pyasn1==0.4.8
 
 COPY ./data /data
-
-WORKDIR Honeyd
-
-RUN mv configure.in configure.ac
-RUN ./autogen.sh
-RUN ./configure
-RUN make 
-RUN make install 
-COPY signatures.sh /app/signatures.sh
-WORKDIR /app
-ADD honeyd.conf /app/honeyd.conf
-RUN chmod +x signatures.sh && ./signatures.sh
 
 WORKDIR /home/
 
@@ -65,4 +52,4 @@ EXPOSE 67
 EXPOSE 68
 EXPOSE 161
 
-CMD sudo echo '192.168.10.106  plc1.net' >> /etc/hosts && echo '192.168.10.107  plc2.net' >> /etc/hosts && echo '192.168.10.108  plc3.net' >> /etc/hosts; nohup honeyd -d -f /app/honeyd.conf &> honeyd.log; sh /home/OpenPLC_v3/run.sh; snmpsimd.py --data-dir=/data --agent-udpv4-endpoint=0.0.0.0:161 --v2c-arc
+CMD sudo echo '192.168.10.106  plc1.net' >> /etc/hosts && echo '192.168.10.107  plc2.net' >> /etc/hosts && echo '192.168.10.108  plc3.net' >> /etc/hosts; sh /home/OpenPLC_v3/run.sh; snmpsimd.py --data-dir=/data --agent-udpv4-endpoint=0.0.0.0:161 --v2c-arc
