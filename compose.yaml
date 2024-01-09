@@ -1,0 +1,24 @@
+services:
+    hmi:
+        build: ./HMI/ScadaBR/
+        container_name: hmi
+    plc1:
+        build: ./PLCs/PLC1/
+        container_name: plc1
+        command: bash -c "echo '192.168.10.111 plc1.rete' >> /etc/hosts"
+    plc2:
+        build: ./PLCs/PLC2/
+        container_name: plc2
+        command: bash -c "echo '192.168.10.112 plc1.rete' >> /etc/hosts"
+    plc3:
+        build: ./PLCs/PLC3/
+        container_name: plc3
+        command: bash -c "echo '192.168.10.113 plc1.rete' >> /etc/hosts"
+    proxy:
+        build: ./proxy/
+        container_name: proxy
+    plant:
+        build: ./simulink/
+        container_name: plant   
+        volumes:
+                - /simlink:/simlink
