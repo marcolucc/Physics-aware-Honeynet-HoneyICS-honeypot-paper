@@ -8,7 +8,7 @@ RUN pip install flask flask-login pyserial pymodbus
 
 
 WORKDIR /home/
-RUN git clone https://github.com/thiagoralves/ScadaBR_Installer.git
+COPY ./ScadaBR_Installer ScadaBR_Installer
 WORKDIR /home/ScadaBR_Installer/
 RUN sudo ./install_scadabr.sh linux
 
