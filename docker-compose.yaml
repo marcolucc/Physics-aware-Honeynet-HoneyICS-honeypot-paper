@@ -1,0 +1,81 @@
+services:
+    hmi:
+        build: ./HMI/ScadaBR/
+        container_name: hmi
+        ports:
+             - 9090
+        networks:
+          vpcbr:
+            ipv4_address: 192.168.10.105
+        extra_hosts:
+            - "plc1.rete:192.168.10.106"
+            - "plc2.rete:192.168.10.107"
+            - "plc3.rete:192.168.10.108"
+    plc1:
+        build: ./PLCs/plc1/
+        container_name: plc1
+        networks:
+          vpcbr:
+            ipv4_address: 192.168.10.106
+
+        ports:
+            - 6668
+            - 8080
+            - 502
+
+        extra_hosts:
+            - "plc2.rete:192.168.10.107"
+            - "plc3.rete:192.168.10.108"
+    plc2:
+        build: ./PLCs/plc2/
+        container_name: plc2
+        ports:
+            - 6668
+            - 8080
+            - 502
+            - 102
+        networks:
+          vpcbr:
+            ipv4_address: 192.168.10.107
+        extra_hosts:
+            - "plc1.rete:192.168.10.106"
+            - "plc3.rete:192.168.10.108"
+    plc3:
+        build: ./PLCs/plc3/
+        container_name: plc3
+        ports:
+            - 6668
+            - 8080
+            - 502
+            - 102
+        networks:
+          vpcbr:
+            ipv4_address: 192.168.10.108
+        extra_hosts:
+            - "plc1.rete:192.168.10.106"
+            - "plc2.rete:192.168.10.107"
+    proxy:
+        build: ./proxy/
+        container_name: proxy
+
+    #plant:
+    #    build: ./simulink/
+    #    container_name: plant
+    #    networks:
+    #      vpcbr:
+    #        ipv4_address: 192.168.10.109
+
+    #    extra_hosts:
+     #       - "plc1.rete:192.168.10.106"
+    #        - "plc2.rete:192.168.10.107"
+     #       - "plc3.rete:192.168.10.108"  
+    #    volumes:
+    #            - './simlink:/simlink'
+
+networks:
+  vpcbr:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 192.168.10.0/24
+         gateway: 192.168.10.1
